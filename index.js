@@ -11,9 +11,9 @@ io.on('connection', (socket)=>{
 
     socket.on('disconnect', ()=>{
         const user = userInfo.find(c=>c.id == socket.id)
-        console.log(user)
-
-        socket.broadcast.emit('msg',{level:"sys" ,msg:user.nickName+"님이 퇴장하였습니다"})
+        if(user){
+            socket.broadcast.emit('msg',{level:"sys" ,msg:user.nickName+" 님이 퇴장하였습니다", nickName:""})
+        }
     })
 
     socket.on('login', (nickName)=>{
@@ -22,11 +22,11 @@ io.on('connection', (socket)=>{
             id:socket.id
         }
         userInfo.push(info)
-        io.emit('msg',{level:"sys" ,msg:nickName+"님이 입장하였습니다"})
+        io.emit('msg',{level:"sys" ,msg:nickName+" 님이 입장하였습니다",nickName:""})
     })
 
-    socket.on('send', (msg1)=>{
-        socket.broadcast.emit('msg',{level:"" ,msg:msg1})
+    socket.on('send', ({nickName:nickName, msg:msg})=>{
+        socket.broadcast.emit('msg',{level:"" ,msg:msg, nickName:nickName})
     })
 
 })
